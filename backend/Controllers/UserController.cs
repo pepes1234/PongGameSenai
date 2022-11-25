@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using backend.Model;
 using backend.Services;
 using System.Drawing;
+using Microsoft.EntityFrameworkCore;
+
 namespace backend;
 
 [ApiController]
@@ -11,11 +13,12 @@ namespace backend;
 public class UserController : ControllerBase
 {
     [HttpGet("{user}")]
-    public async Task<IActionResult> RegisterUser(int user)   
+    public async Task<IActionResult> RegisterUser(Usuario user)   
     {
+        var context = new PongGameDbContext();
+        var NicknameVerify = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == user.Id);
         try
         {
-            var context = new PongGameDbContext();
             await context.AddAsync(user);
             await context.SaveChangesAsync();
 
@@ -26,36 +29,26 @@ public class UserController : ControllerBase
             return BadRequest();
         }
     }
-    [HttpGet("aaa")]
-    public async Task<IActionResult> Login(Usuario user, [FromServices]UserService service)
+    [HttpGet("login/{id}")]
+    public async Task<IActionResult> Login(int Id, [FromServices]UserService service)
     {
-        return Ok();
+        var context = new PongGameDbContext();
+        var NicknameVerify = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == Id);
+        if(NicknameVerify == null)
+            return NotFound("Usuario Inexistente");
+
+        Color[] clr1 = new Color[100];
+        Color[] clr2 = new Color[5];
+        for(int i = 1; i <= 5; i ++)
+        {
+            clr1[i] = Color.FromArgb(NicknameVerify.Value"{i}"R, NicknameVerify.Value{i}G, NicknameVerify.Value{i}B);
+        }
+        
+        return Ok(clr1[0]);
     }
     [HttpGet("test")]
     public IActionResult Test()
     {
-        PongGameDbContext context = new PongGameDbContext();
-        Color[] clr = { Color.FromArgb(24, 34, 45), Color.FromArgb(224, 124, 145), Color.FromArgb(24, 34, 225) };
-        byte[] byteClr = new byte[clr.Length];
-        byte[] clrByteTest = new byte[2];
-        clrByteTest[0] = clr[0].R;
-        for(int i = 0; i < clr.Length; i+=3)
-        {
-            byteClr[i] = clr[i].R;
-            byteClr[i + 1] = clr[i].G;
-            byteClr[i + 2] = clr[i].B; 
-        }
-        var usr = new Usuario()
-        {
-            Nickname = "Pepe",
-            FaceData = byteClr
-        };
-        int[] var = new int[byteClr.Length];
-        string a = "";
-        for(int i = 0; i < byteClr.Length; i++)
-        {
-            
-        }
-        return Ok(clrByteTest[0].ToString());
+        return Ok("poggers");
     }
 }
