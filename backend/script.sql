@@ -13,7 +13,6 @@ go
 create table Usuario(
 	Id int primary key identity,
 	Nickname varchar(255),
-	FaceData varbinary,
 );
 go
 
@@ -24,4 +23,17 @@ create table Score(
 	Player1Score int,
 	Player2Score int,
 );
+go
 
+create table RGB(
+	id int primary key identity,
+	arrayIndex int,
+	UserId int references Usuario(Id),
+	R int,
+	G int, 
+	B int,
+);
+
+select*from Usuario
+select*from Score
+select*from RGB

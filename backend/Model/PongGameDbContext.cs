@@ -27,7 +27,7 @@ public partial class PongGameDbContext : DbContext
     {
         modelBuilder.Entity<Score>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Score__3213E83F776E1509");
+            entity.HasKey(e => e.Id).HasName("PK__Score__3213E83F43E04EBE");
 
             entity.ToTable("Score");
 
@@ -44,28 +44,13 @@ public partial class PongGameDbContext : DbContext
 
         modelBuilder.Entity<Usuario>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Usuario__3214EC07E75A1A2C");
+            entity.HasKey(e => e.Id).HasName("PK__Usuario__3214EC07428F47F8");
 
             entity.ToTable("Usuario");
 
             entity.Property(e => e.Nickname)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.Value1B).HasColumnName("value1B");
-            entity.Property(e => e.Value1G).HasColumnName("value1G");
-            entity.Property(e => e.Value1R).HasColumnName("value1R");
-            entity.Property(e => e.Value2B).HasColumnName("value2B");
-            entity.Property(e => e.Value2G).HasColumnName("value2G");
-            entity.Property(e => e.Value2R).HasColumnName("value2R");
-            entity.Property(e => e.Value3B).HasColumnName("value3B");
-            entity.Property(e => e.Value3G).HasColumnName("value3G");
-            entity.Property(e => e.Value3R).HasColumnName("value3R");
-            entity.Property(e => e.Value4B).HasColumnName("value4B");
-            entity.Property(e => e.Value4G).HasColumnName("value4G");
-            entity.Property(e => e.Value4R).HasColumnName("value4R");
-            entity.Property(e => e.Value5B).HasColumnName("value5B");
-            entity.Property(e => e.Value5G).HasColumnName("value5G");
-            entity.Property(e => e.Value5R).HasColumnName("value5R");
         });
 
         OnModelCreatingPartial(modelBuilder);
