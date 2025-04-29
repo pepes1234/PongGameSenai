@@ -1,8 +1,12 @@
-# ProjetoEstacionamento
+# PongGameSenai
 
-![.NET 6.0](https://img.shields.io/badge/.NET-6.0-blue) ![C#](https://img.shields.io/badge/Language-C%23-blueviolet) ![EF Core](https://img.shields.io/badge/Entity%20Framework-Core-yellow) ![Swagger](https://img.shields.io/badge/Swagger-API%20Docs-brightgreen) ![MIT License](https://img.shields.io/badge/License-MIT-lightgrey)
+![.NET 6.0](https://img.shields.io/badge/.NET-6.0-blue) ![ASP.NET Core Web API](https://img.shields.io/badge/ASP.NET%20Core-Web%20API-green) ![EF Core](https://img.shields.io/badge/Entity%20Framework-Core-yellow) ![Kinect SDK](https://img.shields.io/badge/Kinect-SDK-lightblue) ![C#](https://img.shields.io/badge/Language-C%23-blueviolet) ![MIT License](https://img.shields.io/badge/License-MIT-lightgrey)
 
-> API RESTful em ASP.NET Core para gerenciar alocações de veículos em concessionárias.
+> Jogo Pong controlado pelo sensor Kinect com backend em ASP.NET Core para gestão de usuários e placares via reconhecimento facial e rastreamento de mãos.
+
+>O projeto foi uma proposta de atividade do curso Senai Celso Charuri, a ideia principal era conseguir fazer um "kinect" com a webcam do computador, qual leria nossos movimentos e jogariamos um jogo dessa forma. Infelizmente o projeto não teve fim, porém ainda tem códigos muito interessantes
+
+>A proposta era fazer um Pong Game, para ser 1 jogador vs 1 jogador, para isso utilizariamos trackings das mãos dos jogadores, a qual seria previamente registrado. Também teria registro e reconhecimento facial para analise de resultados e login no jogo, que seria feito com algoritimos de K-Means utilizando a paleta de cores especifica da pessoa, o que trás diversos problemas como diferença de iluminação, porém foi a forma mais facil encontrada.
 
 ---
 
@@ -11,196 +15,152 @@
 - [Sobre o Projeto](#sobre-o-projeto)
 - [Tecnologias](#tecnologias)
 - [Pré-requisitos](#pré-requisitos)
-- [Instalação](#instalação)
-- [Configuração](#configuração)
-- [Geração de Models](#geração-de-models)
-- [Uso / Execução](#uso--execução)
-- [Endpoints da API](#endpoints-da-api)
-- [Modelos de Dados](#modelos-de-dados)
-- [Estrutura do Projeto](#estrutura-do-projeto)
+- [Estrutura do Repositório](#estrutura-do-repositório)
+- [Backend](#backend)
+  - [Configuração do Banco](#configuração-do-banco)
+  - [Executar API](#executar-api)
+  - [Endpoints](#endpoints)
+- [Frontend](#frontend)
+  - [Hand Tracking & Blur](#hand-tracking--blur)
+  - [Reconhecimento Facial](#reconhecimento-facial)
+  - [Interface Pong](#interface-pong)
 - [Contribuindo](#contribuindo)
 - [Licença](#licença)
-- [Autor](#autor)
 
 ---
 
 ## 💡 Sobre o Projeto
 
-O **ProjetoEstacionamento** é uma API simples que:
+O **PongGameSenai** integra:
 
-- Verifica se há vaga disponível em uma área de concessionária (`Alocacao`).
-- Consulta detalhes de um veículo por nome de modelo (`Automovei`).
-- Mantém registros de clientes e concessionárias.
+1. **Backend**: API RESTful em **ASP.NET Core 6.0** com **Entity Framework Core** para persistir usuários, dados faciais e placares.
+2. **Reconhecimento Facial**: módulo console que usa **KMeans** para verificação de face via array de cores.
+3. **Hand Tracking & Blur**: aplicação que usa **Kinect SDK** para detectar a mão e aplicar blur no fundo.
+4. **Interface Pong**: jogo Pong em **WinForms**, onde as raquetes são controladas pelo movimento das mãos e resultados enviados ao backend.
 
-Use este boilerplate para aprender a criar APIs com ASP.NET Core, Entity Framework Core e Swagger.
+Use este projeto para aprender sobre integração de sensores, visão computacional e aplicações full-stack .NET.
 
 ---
 
 ## 🚀 Tecnologias
 
-| Camada                | Tecnologia                  |
-|-----------------------|-----------------------------|
-| Framework             | ASP.NET Core 6.0            |
-| ORM                   | Entity Framework Core 7.0   |
-| Banco de Dados        | SQL Server                  |
-| API Docs              | Swagger / Swashbuckle       |
-| Linguagem             | C# 10                       |
-| Scripting             | PowerShell (createmodel.ps1)|
+| Componente               | Tecnologia                         |
+|--------------------------|------------------------------------|
+| Backend API              | ASP.NET Core 6.0, EF Core          |
+| Banco de Dados           | SQL Server                         |
+| Serviços (Reconhecimento)| C# Console (KMeans)                |
+| Hand Tracking & Blur     | Kinect SDK, WinForms               |
+| Interface Pong           | WinForms (.NET 6.0), C#            |
 
 ---
 
 ## ✅ Pré-requisitos
 
 - [.NET 6.0 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
-- SQL Server (instância local ou remota)
-- PowerShell 5.1+
+- SQL Server (local ou remoto)
+- [Kinect SDK](https://www.microsoft.com/en-us/download/details.aspx?id=44561)
+- Visual Studio 2022 ou superior (para projetos WinForms)
 
 ---
 
-## 🛠️ Instalação
+## 🗂️ Estrutura do Repositório
+
+```plain
+PongGameSenai/
+├── backend/                  # API ASP.NET Core (.NET 6.0)
+│   ├── Controllers/          # UserController.cs
+│   ├── Model/                # EF Core DbContext e entidades
+│   ├── Services/             # UserService (KMeans)
+│   ├── script.sql            # Cria DB e tabelas
+│   ├── createmodel.ps1       # Scaffold modelos do DB
+│   ├── appsettings.json      # ConnectionStrings
+│   └── Program.cs            # Configuração e Swagger
+├── frontend/                 # Soluções Kinect + Pong
+│   ├── Hand/                 # Hand Tracking & Blur (WinForms)
+│   ├── Recognition/          # Console KMeans Face Verify
+│   └── Interface/            # Jogo Pong WinForms
+├── .vscode/
+├── LICENSE
+└── README.md
+```
+
+---
+
+## Backend
+
+### ⚙️ Configuração do Banco
+
+Execute `backend/script.sql` no SQL Server para criar a base **PongGameDB** e tabelas `Usuario`, `Score` e `RGB`.
+
+```sql
+USE master;
+GO
+IF EXISTS (SELECT * FROM sys.databases WHERE name = 'PongGameDB')
+  DROP DATABASE PongGameDB;
+GO
+CREATE DATABASE PongGameDB;
+GO
+USE PongGameDB;
+GO
+-- Criação de tabelas...
+```
+
+Ajuste a _connection string_ em `backend/appsettings.json` se necessário.
+
+### ▶️ Executar API
 
 ```bash
-# 1. Clone o repositório
-git clone https://github.com/pepes1234/ProjetoEstacionamento.git
-cd ProjetoEstacionamento
-
-# 2. (Opcional) Abra no Visual Studio ou VS Code
-code .
-```
-
----
-
-## ⚙️ Configuração
-
-### String de conexão
-
-O contexto `SistemaFabricaAutomotivaContext` contém uma _connection string_ default:
-
-```csharp
-=> optionsBuilder.UseSqlServer(
-   "Data Source=SNCCHLAB02F13\\SQLEXPRESS;"
- + "Initial Catalog=SistemaFabricaAutomotiva;"
- + "Integrated Security=SSPI;TrustServerCertificate=True");
-```
-
-Altere-a diretamente em `Model/SistemaFabricaAutomotivaContext.cs` ou use _scaffolding_ para gerar um novo contexto:
-
-```powershell
-# No PowerShell, forneça servidor e database:
-.\\createmodel.ps1 \
-  MyServerName \
-  MyDatabaseName
-```
-
-Isso criará/atualizará a pasta `Model/` com as entidades mapeadas.
-
----
-
-## 🧱 Geração de Models
-
-O script PowerShell `createmodel.ps1` utiliza o EF Core para scaffold:
-
-```powershell
-.\createmodel.ps1 \
-  <ServerName> \
-  <DatabaseName>
-```
-
-Ele instalará as ferramentas necessárias e executará:
-
-```powershell
-dotnet ef dbcontext scaffold \
-  "Data Source=<ServerName>;Initial Catalog=<DatabaseName>;Integrated Security=SSPI;TrustServerCertificate=True" \
-  Microsoft.EntityFrameworkCore.SqlServer --force -o Model
-```
-
----
-
-## ▶️ Uso / Execução
-
-```bash
-cd ProjetoEstacionamento
-# Build e run da API
+cd backend
 dotnet build
 dotnet run
 ```
 
-A API estará disponível em:
+A API ficará em `https://localhost:5001` e `http://localhost:5000`. Acesse Swagger em `/swagger`.
 
-- `https://localhost:5001`
-- `http://localhost:5000`
+### 📡 Endpoints
 
-Acesse a documentação interativa em `/swagger` (ex.: `https://localhost:5001/swagger`).
-
----
-
-## 📡 Endpoints da API
-
-| Método | Rota                                 | Descrição                                     |
-|--------|--------------------------------------|-----------------------------------------------|
-| GET    | `/concessionaria/{areaNumber}`       | Verifica se há alocação na área (`bool`).     |
-| GET    | `/concessionaria/consultCar/{model}` | Retorna dados do veículo pelo nome do modelo. |
-
-**Exemplos:**
-
-- Verificar área 10:
-  ```bash
-  curl https://localhost:5001/concessionaria/10
-  ```
-- Consultar carro "Civic":
-  ```bash
-  curl https://localhost:5001/concessionaria/consultCar/Civic
-  ```
+| Método | Rota                   | Descrição                                           |
+|--------|------------------------|-----------------------------------------------------|
+| GET    | `/User`                | Registra usuário e dados faciais (query params)     |
+| GET    | `/User/login/{id}`     | Verifica face e retorna status de login             |
 
 ---
 
-## 🗃️ Modelos de Dados
+## Frontend
 
-- **Alocacao**: `Id`, `Area`, `Automoveis`, `Concessionaria`, `Quantidade`  
-- **Automovei**: `Id`, `Modelo`, `Preco`  
-- **Cliente**: `Id`, `Nome`  
-- **Concessionaria**: `Id`, `Nome`  
+### 🖐️ Hand Tracking & Blur
 
----
+Projeto WinForms que:
 
-## 🗂️ Estrutura do Projeto
+- Conecta ao Kinect para detectar posição da mão.
+- Aplica blur no restante da cena.
 
-```
-ProjetoEstacionamento/
-├── Controllers/
-│   └── ConcessionariaController.cs
-├── Model/
-│   ├── Alocacao.cs
-│   ├── Automovei.cs
-│   ├── Cliente.cs
-│   ├── Concessionaria.cs
-│   └── SistemaFabricaAutomotivaContext.cs
-├── createmodel.ps1
-├── appsettings.json
-├── Program.cs
-├── ProjetoEstacionamento.csproj
-└── README.md  (este arquivo)
+```bash
+cd frontend/Hand
+# Abra HandTracking.sln no VS e execute.
 ```
 
+### 🧠 Reconhecimento Facial
+
+App console que:
+
+- Recebe array de cores de uma imagem.
+- Compara com dados armazenados via algoritmo KMeans.
+
+```bash
+cd frontend/Recognition
+dotnet build
+dotnet run
+```
+
+### 🖥️ Interface Pong
+
+Formulário WinForms onde:
+
+- As raquetes são movimentadas pelo tracking da mão.
+- O placar é enviado à API ao final de cada partida.
+
+1. Abra `frontend/Interface/PongGameSenai.sln` no Visual Studio.
+2. Compile e execute.
+
 ---
-
-## 🤝 Contribuindo
-
-1. Faça um **fork** deste repositório  
-2. Crie uma nova branch: `git checkout -b feature/minha-feature`  
-3. Commit suas mudanças: `git commit -m "feat: descrição da feature"`  
-4. Push para seu fork: `git push origin feature/minha-feature`  
-5. Abra um **Pull Request**
-
----
-
-## 📄 Licença
-
-Este projeto está licenciado sob a **MIT License**. Veja [LICENSE](LICENSE) para detalhes.
-
----
-
-## 👤 Autor
-
-Feito com ❤️ por [@pepes1234](https://github.com/pepes1234)
-
