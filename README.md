@@ -4,6 +4,10 @@
 
 > Jogo Pong controlado pelo sensor Kinect com backend em ASP.NET Core para gestão de usuários e placares via reconhecimento facial e rastreamento de mãos.
 
+>O projeto foi uma proposta de atividade do curso Senai Celso Charuri, a ideia principal era conseguir fazer um "kinect" com a webcam do computador, qual leria nossos movimentos e jogariamos um jogo dessa forma. Infelizmente o projeto não teve fim, porém ainda tem códigos muito interessantes
+
+>A proposta era fazer um Pong Game, para ser 1 jogador vs 1 jogador, para isso utilizariamos trackings das mãos dos jogadores, a qual seria previamente registrado. Também teria registro e reconhecimento facial para analise de resultados e login no jogo, que seria feito com algoritimos de K-Means utilizando a paleta de cores especifica da pessoa, o que trás diversos problemas como diferença de iluminação, porém foi a forma mais facil encontrada.
+
 ---
 
 ## 📚 Sumário
